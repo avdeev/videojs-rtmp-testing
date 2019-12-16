@@ -1,26 +1,41 @@
 import React from 'react';
-import logo from './logo.svg';
+import videojs from 'video.js'
+
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const videoJsOptions = {
+  autoplay: true,
+  controls: true,
+  sources: [{
+    src: '/path/to/video.mp4',
+    type: 'video/mp4'
+  }],
+};
+
+class App extends React.Component {
+  componentDidMount() {
+    // instantiate Video.js
+    this.player = videojs(this.videoNode, videoJsOptions, function onPlayerReady() {
+      console.log('onPlayerReady', this)
+    });
+  }
+
+  // destroy player on unmount
+  componentWillUnmount() {
+    if (this.player) {
+      this.player.dispose()
+    }
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <div data-vjs-player>
+          <video ref={ node => this.videoNode = node } className="video-js"></video>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
